@@ -50,7 +50,7 @@ install.packages("optional-path-to-packages/local-r-package-file.tar.gz", repos=
 
 ## R Binaries
 The binaries used by the buildpack are for R 3.0.1, and are hosted
-on [https://s3.amazonaws.com/r-buildpack/R-3.1.0-binaries-20140629-2201.tar.gz](https://s3.amazonaws.com/r-buildpack/R-3.1.0-binaries-20140629-2201.tar.gz)
+on [https://s3.amazonaws.com/r-buildpack-latest/R-3.3.1-binaries-20160720-0331.tar.gz](https://s3.amazonaws.com/r-buildpack-latest/R-3.3.1-binaries-20160720-0331.tar.gz)
 
 See the [guide](support/README.md) for building the R binaries yourself.
 
