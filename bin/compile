@@ -71,13 +71,15 @@ GCC_VERSION="4.3"
 GLIBC_VERSION="2.7"
 #R_VERSION="2.15.1"
 #R_VERSION="3.1.0"
-R_VERSION="3.3.1"
+R_VERSION="3.1.2"
+#R_VERSION="3.3.1"
 
 #S3_BUCKET="heroku-buildpack-r"
 S3_BUCKET="r-buildpack-latest"
 #R_BINARIES="http://${S3_BUCKET}.s3.amazonaws.com/R-${R_VERSION}-binaries-${BUILD_PACK_VERSION}.tar.gz"
 #R_BINARIES="https://s3.amazonaws.com/r-buildpack/R-3.1.0-binaries-20140629-2201.tar.gz"
-R_BINARIES="https://s3.amazonaws.com/r-buildpack-latest/R-3.3.1-binaries-20160720-0331.tar.gz"
+R_BINARIES="https://heroku-buildpack-r.s3.amazonaws.com/cedar/R-3.1.2-binaries-20150301-1046.tar.gz"
+#R_BINARIES="https://s3.amazonaws.com/r-buildpack-latest/R-3.3.1-binaries-20160720-0331.tar.gz"
 
 VENDOR_DIR="$BUILD_DIR/vendor"
 R_HOME="$VENDOR_DIR/R"
@@ -101,8 +103,10 @@ rm r_binaries.tar.gz
 echo "Directory created, R pulled, unpacked" | indent
 
 # need to copy the binaries to /app/vendor so that R works
-cp -R $VENDOR_DIR/gcc-$GCC_VERSION /app/vendor/gcc-$GCC_VERSION
-cp -R $VENDOR_DIR/glibc-$GLIBC_VERSION /app/vendor/glibc-$GLIBC_VERSION
+#cp -R $VENDOR_DIR/gcc-$GCC_VERSION /app/vendor/gcc-$GCC_VERSION
+#cp -R $VENDOR_DIR/glibc-$GLIBC_VERSION /app/vendor/glibc-$GLIBC_VERSION
+cp -R $VENDOR_DIR/gcc /app/vendor/gcc
+cp -R $VENDOR_DIR/glibc /app/vendor/glibc
 #cp -R $VENDOR_DIR/readline /app/vendor/readline
 cp -R $VENDOR_DIR/R /app/vendor/R
 
@@ -110,9 +114,12 @@ echo "Stuff copied" | indent
 
 
 # R needs to know where gfortran and glibc header files are
-export PATH=/app/vendor/R/bin:/app/vendor/gcc-$GCC_VERSION/bin:$PATH
-export LDFLAGS="-L/app/vendor/gcc-$GCC_VERSION/lib64/"
-export CPPFLAGS="-I/app/vendor/glibc-$GLIBC_VERSION/string/ -I/app/vendor/glibc-$GLIBC_VERSION/time -I/usr/include/x86_64-linux-gnu/sys -I/usr/include/x86_64-linux-gnu/gnu"
+#export PATH=/app/vendor/R/bin:/app/vendor/gcc-$GCC_VERSION/bin:$PATH
+export PATH=/app/vendor/R/bin:/app/vendor/gcc/bin:$PATH
+#export LDFLAGS="-L/app/vendor/gcc-$GCC_VERSION/lib64/"
+export LDFLAGS="-L/app/vendor/gcc/lib64/"
+#export CPPFLAGS="-I/app/vendor/glibc-$GLIBC_VERSION/string/ -I/app/vendor/glibc-$GLIBC_VERSION/time -I/usr/include/x86_64-linux-gnu/sys -I/usr/include/x86_64-linux-gnu/gnu"
+export CPPFLAGS="-I/app/vendor/glibc/string/ -I/app/vendor/glibc/time -I/usr/include/x86_64-linux-gnu/sys -I/usr/include/x86_64-linux-gnu/gnu"
 export R_HOME=/app/vendor/R
 export R_INCLUDE=$R_HOME/lib64/R/include
 export LD_LIBRARY_PATH="/lib:/usr/lib:/usr/lib/x86_64-linux-gnu:$R_HOME/lib64:$LD_LIBRARY_PATH"
@@ -171,13 +178,18 @@ echo "R $R_VERSION successfully installed" | indent
 
 # need to copy binaries back so that any installed packages are included in the slug
 rm -rf $VENDOR_DIR && mkdir -p $VENDOR_DIR
-cp -R /app/vendor/gcc-$GCC_VERSION $VENDOR_DIR/gcc-$GCC_VERSION
-cp -R /app/vendor/glibc-$GLIBC_VERSION $VENDOR_DIR/glibc-$GLIBC_VERSION
+#cp -R /app/vendor/gcc-$GCC_VERSION $VENDOR_DIR/gcc-$GCC_VERSION
+#cp -R /app/vendor/glibc-$GLIBC_VERSION $VENDOR_DIR/glibc-$GLIBC_VERSION
+cp -R /app/vendor/gcc $VENDOR_DIR/gcc
+cp -R /app/vendor/glibc $VENDOR_DIR/glibc
 cp -R /app/vendor/R $VENDOR_DIR/R
 
 # HACK
-cp $VENDOR_DIR/gcc-$GCC_VERSION/lib64/* $VENDOR_DIR/R/lib64/R/lib
+cp $VENDOR_DIR/gcc/lib64/* $VENDOR_DIR/R/lib64/R/lib
+cp $VENDOR_DIR/gcc/lib64/* $VENDOR_DIR/R/lib64/R/lib
 
 # remove unneeded files to make slug smaller
-pushd $VENDOR_DIR/gcc-$GCC_VERSION > /dev/null && rm -rf !(lib64) && popd > /dev/null
-pushd $VENDOR_DIR/glibc-$GLIBC_VERSION > /dev/null && rm -rf !(string|time) && popd > /dev/null
+#pushd $VENDOR_DIR/gcc-$GCC_VERSION > /dev/null && rm -rf !(lib64) && popd > /dev/null
+#pushd $VENDOR_DIR/glibc-$GLIBC_VERSION > /dev/null && rm -rf !(string|time) && popd > /dev/null
+pushd $VENDOR_DIR/gcc > /dev/null && rm -rf !(lib64) && popd > /dev/null
+pushd $VENDOR_DIR/glibc > /dev/null && rm -rf !(string|time) && popd > /dev/null
