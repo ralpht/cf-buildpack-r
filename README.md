@@ -20,7 +20,7 @@ Example usage (replace ```<app_name>``` with the name of your app):
 $ ls
 init.r prog1.r prog2.r ...
 
-$ cf push <app_name> -b http://github.com/alexkago/cf-buildpack-r.git
+$ cf push <app_name> -b http://github.com/ralpht/cf-buildpack-r.git
 
 ...
 -----> R successfully installed

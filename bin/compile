@@ -73,7 +73,8 @@ GLIBC_VERSION="2.7"
 #R_VERSION="3.1.0"
 R_VERSION="3.3.1"
 
-S3_BUCKET="heroku-buildpack-r"
+#S3_BUCKET="heroku-buildpack-r"
+S3_BUCKET="r-buildpack-latest"
 #R_BINARIES="http://${S3_BUCKET}.s3.amazonaws.com/R-${R_VERSION}-binaries-${BUILD_PACK_VERSION}.tar.gz"
 #R_BINARIES="https://s3.amazonaws.com/r-buildpack/R-3.1.0-binaries-20140629-2201.tar.gz"
 R_BINARIES="https://s3.amazonaws.com/r-buildpack-latest/R-3.3.1-binaries-20160720-0331.tar.gz"
@@ -89,9 +90,12 @@ echo "Vendoring R $R_VERSION" | indent
 
 # download and unpack binaries
 echo "Downloading and unpacking R binaries" | indent
+echo $VENDOR_DIR
 mkdir -p $VENDOR_DIR && mkdir -p /app/vendor
 curl $R_BINARIES -s -o r_binaries.tar.gz
 tar xzf r_binaries.tar.gz -C $VENDOR_DIR
+echo "Display directories"
+ls -ls $VENDOR_DIR
 rm r_binaries.tar.gz
 
 echo "Directory created, R pulled, unpacked" | indent
